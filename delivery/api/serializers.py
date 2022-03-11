@@ -6,5 +6,5 @@ class DeliverySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Delivery
-        fields = ['delivery_partner']
+        fields = ['delivery_partner','creation_time','location_lat','location_long','rating','temperature','status']
 
