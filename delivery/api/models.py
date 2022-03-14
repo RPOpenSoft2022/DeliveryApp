@@ -12,7 +12,7 @@ class Delivery(models.Model):
     status = models.CharField(default= Status.not_picked,choices=Status.choices,max_length=20)    
 
     delivery_partner = models.BigIntegerField()   
-    creation_time = models.DateTimeField(default=datetime.now())
+    creation_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     location_lat = models.FloatField(default=0)     #Stores latitute of location
     location_long = models.FloatField(default=0)    #Stores longitute of location
     rating = models.FloatField(default=0)
@@ -20,7 +20,7 @@ class Delivery(models.Model):
     pickup_address = models.TextField(default='')
     delivery_address = models.TextField(default='')
     customer_phone_number = models.TextField(default='')
-    order_id = models.BigIntegerField()
+    order_id = models.BigIntegerField(null=True)
     order_details = models.TextField(default='') 
 
                                             
