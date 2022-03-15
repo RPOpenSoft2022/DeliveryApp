@@ -1,6 +1,6 @@
-from api.serializers import DeliverySerializer
+from api.serializers import DeliverySerializer, DeliveryUserSerializer
 from rest_framework.decorators import api_view
-from . models import Delivery
+from . models import Delivery,DeliveryUser
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
@@ -37,8 +37,13 @@ from rest_framework import viewsets
 #             return Response(serializer.data, status=status.HTTP_201_CREATED)
 #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class delivery_list(viewsets.ModelViewSet):
+class DeliveryViewsets(viewsets.ModelViewSet):
     queryset=Delivery.objects.all()
     serializer_class=DeliverySerializer
     permission_classes=[]
-            
+
+
+class DeliveryUserViewsets(viewsets.ModelViewSet):
+    queryset=DeliveryUser.objects.all()
+    serializer_class=DeliveryUserSerializer
+    permission_classes=[]
