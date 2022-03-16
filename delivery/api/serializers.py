@@ -22,3 +22,4 @@ class DeliveryUserSerializer(serializers.ModelSerializer):
 class OTPSerializer(serializers.Serializer):
     order_id=serializers.IntegerField()
     otp=serializers.IntegerField()
+

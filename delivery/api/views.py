@@ -1,6 +1,7 @@
 from django.http import HttpResponse
-from api.serializers import DeliverySerializer, DeliveryUserSerializer, OTPSerializer
+from api.serializers import * 
 from . models import Delivery,DeliveryUser
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
@@ -45,3 +46,12 @@ class getDeliveryOTP(viewsets.ViewSet):
             return Response({"message":"Delivered"})
         else:
             return Response({"message":"wrong OTP"})
+
+
+@api_view(['PUT'])
+def readyToPick(request):
+    order_id=request.POST.get('order_id')
+    delivery = Delivery.objects.get(order_id=order_id)
+    delivery.status = delivery.status[1]
+    delivery.save()
+    return Response({"message":"out for delivery"})
