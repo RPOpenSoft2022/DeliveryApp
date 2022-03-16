@@ -38,7 +38,7 @@ class getDeliveryOTP(viewsets.ViewSet):
         order_id=request.data['order_id']
         otp=request.data['otp']
         print(order_id,otp)
-        response=requests.post('http://localhost:3001/order/verifyotp/{order_id}',data = {'delivery_otp':otp})
+        response=requests.post(url='http://localhost:3001/order/verifyotp/{order_id}',data = {'delivery_otp':otp})
         if(response.status_code==200):
             delivery = Delivery.objects.get(order_id=order_id)
             delivery.status = delivery.status[2]
@@ -54,4 +54,5 @@ def readyToPick(request):
     delivery = Delivery.objects.get(order_id=order_id)
     delivery.status = delivery.status[1]
     delivery.save()
+    requests.post(url='localhost:8000/order/update_status/'+order_id, json={"target_status":2})
     return Response({"message":"out for delivery"})
