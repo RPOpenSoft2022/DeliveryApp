@@ -1,4 +1,5 @@
-from api.serializers import DeliverySerializer, DeliveryUserSerializer
+from django.http import HttpResponse
+from api.serializers import DeliverySerializer, DeliveryUserSerializer, OTPSerializer
 from . models import Delivery,DeliveryUser
 from rest_framework.response import Response
 from rest_framework import status
@@ -27,3 +28,20 @@ class DeliveryUserViewsets(viewsets.ModelViewSet):
         nearest_delivery_person = delivery_persons_queryset.first()
 
         serializer.save(delivery_partner = nearest_delivery_person.id)
+
+class getDeliveryOTP(viewsets.ViewSet):
+    queryset=Delivery.objects.all()
+    serializer_class=OTPSerializer
+
+    def create(self,request):
+        order_id=request.data['order_id']
+        otp=request.data['otp']
+        print(order_id,otp)
+        response=requests.post('http://localhost:3001/order/verifyotp/{order_id}',data = {'delivery_otp':otp})
+        if(response.status_code==200):
+            delivery = Delivery.objects.get(order_id=order_id)
+            delivery.status = delivery.status[2]
+            delivery.save()
+            return Response({"message":"Delivered"})
+        else:
+            return Response({"message":"wrong OTP"})

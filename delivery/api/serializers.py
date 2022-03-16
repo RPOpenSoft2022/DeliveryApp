@@ -18,3 +18,7 @@ class DeliveryUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = DeliveryUser
         fields = ['id','user_id','current_location','last_updated_location_time','is_free']
+
+class OTPSerializer(serializers.Serializer):
+    order_id=serializers.IntegerField()
+    otp=serializers.IntegerField()
