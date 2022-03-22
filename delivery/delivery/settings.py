@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os # for getting the urls
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +25,10 @@ SECRET_KEY = 'django-insecure-mwb+v7=)q#*p6lwb5%7$pn-hrv3@#xwon*ollvk$^g*5gvjq*o
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+ORDERS_MICROSERVICE_URL = os.getenv('ORDERS_MICROSERVICE_URL')
+STORES_MICROSERVICE_URL = os.getenv('STORES_MICROSERVICE_URL')
+USERS_MICROSERVICE_URL = os.getenv('USERS_MICROSERVICE_URL')
 
 ALLOWED_HOSTS = []
 
