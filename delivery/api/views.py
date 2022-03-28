@@ -5,30 +5,51 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
+from django.contrib.gis.measure import D
+from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 import requests
+
+def isNumber(n):
+    if n is None:
+        return False
+    try:
+        return float(n)
+    except:
+        return False
 
 class DeliveryViewsets(viewsets.ModelViewSet):
     queryset=Delivery.objects.all()
     serializer_class=DeliverySerializer
     permission_classes=[]
 
+    def perform_create(self, serializer):
+
+        # delivery_pickup_location = serializer.data['pickup_location']
+        delivery_pickup_location = Point(isNumber(self.request.data['pickup_location']['latitude']), isNumber(self.request.data['pickup_location']['longitude']), srid=4326)
+
+        delivery_persons_queryset = DeliveryUser.objects.annotate(
+            distance = Distance('current_location', delivery_pickup_location)
+        ).order_by('distance')   
+        
+        # users = DeliveryUser.objects.all()
+        # closest_first = (Distance(delivery_pickup_location, users[0].current_location), users[0].user_id)
+        # for user in users:
+        #    if(Distance(m=distance(delivery_pickup_location, user.current_location).meters) < closest_first[0]):
+        #        closest_first = (Distance(m=distance(delivery_pickup_location, user.current_location).meters), user.user_id)
+           
+
+        nearest_delivery_person = delivery_persons_queryset.first()
+        # print(closest_first)
+
+        serializer.save(delivery_partner = nearest_delivery_person.user_id)
+
 class DeliveryUserViewsets(viewsets.ModelViewSet):
     queryset=DeliveryUser.objects.all()
     serializer_class=DeliveryUserSerializer
     permission_classes=[]
 
-    def perform_create(self, serializer):
 
-        delivery_pickup_location = serializer.data['pickup_location']
-
-        delivery_persons_queryset = DeliveryUser.objects.annotate(
-            distance = Distance('current_location', delivery_pickup_location)
-        ).order_by('distance')   
-
-        nearest_delivery_person = delivery_persons_queryset.first()
-
-        serializer.save(delivery_partner = nearest_delivery_person.id)
 
 class getDeliveryOTP(viewsets.ViewSet):
     queryset=Delivery.objects.all()
