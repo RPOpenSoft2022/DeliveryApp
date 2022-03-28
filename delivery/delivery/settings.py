@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +26,15 @@ SECRET_KEY = 'django-insecure-mwb+v7=)q#*p6lwb5%7$pn-hrv3@#xwon*ollvk$^g*5gvjq*o
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+# URLS for the microservices
+ORDERS_MICROSERVICE_URL = os.getenv('ORDERS_MICROSERVICE_URL')
+STORES_MICROSERVICE_URL = os.getenv('STORES_MICROSERVICE_URL')
+USERS_MICROSERVICE_URL = os.getenv('USERS_MICROSERVICE_URL')
+DELIVERY_MICROSERVICE_URL = os.getenv('USERS_MICROSERVICE_URL')
 
 
 # Application definition
@@ -39,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'delivery.urls'
