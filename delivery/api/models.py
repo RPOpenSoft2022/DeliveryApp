@@ -14,10 +14,9 @@ class Delivery(models.Model):
 
     status = models.CharField(default= Status.not_picked,choices=Status.choices,max_length=20)    
 
-    delivery_partner = models.BigIntegerField()   
+    delivery_partner = models.BigIntegerField(blank=True)   
     creation_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     pickup_location = models.PointField(null=True)
-    delivery_location = models.PointField(null=True)
 
     rating = models.FloatField(default=0)
     temperature = models.FloatField(default=0)     
@@ -32,18 +31,12 @@ class Delivery(models.Model):
         return str(self.order_id)
 
 
-class MyUser(JSONAPIModel):
-    class Meta:
-        # api_url = MICROSERVICE_A_API_URL
-        resource_type = 'user'
-
-    name = Attribute()
-    phone = Attribute()
-    email = Attribute()
 
 class DeliveryUser(models.Model):
 
-       # user_info = RelatedJSONAPIField(json_api_model=MyUser,default='')
+        name = models.TextField(blank=True)
+        phone = models.TextField(blank=True)
+        email = models.EmailField(blank=True)
         user_id = models.BigIntegerField()
 
         current_location = models.PointField(null=True)
