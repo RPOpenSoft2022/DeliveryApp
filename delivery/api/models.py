@@ -22,8 +22,9 @@ class Delivery(models.Model):
     temperature = models.FloatField(default=0)     
     pickup_address = models.TextField(default='')
     delivery_address = models.TextField(default='')
+    customer_name = models.CharField(max_length=100, blank=True)
     customer_phone_number = models.TextField(default='')
-    order_id = models.BigIntegerField(null=True)
+    order_id = models.BigIntegerField(null=True, unique=True)
     order_details = models.TextField(default='') 
 
 
