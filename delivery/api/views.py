@@ -9,6 +9,8 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
 import requests
+import jwt
+from delivery.settings import SECRET_KEY 
 
 def isNumber(n):
     if n is None:
@@ -77,3 +79,13 @@ def readyToPick(request):
     delivery.save()
     requests.post(url='localhost:8000/order/update_status/'+order_id, json={"target_status":2})
     return Response({"message":"out for delivery"})
+
+@api_view(['POST'])
+def assignedOrders(request):
+    userId = jwt.decode(request.headers['token'], SECRET_KEY, algorithms=["HS256"])['id']
+    deliveryUser= Delivery.objects.filter(id=userId['delivery_partner'])
+    deliveries=[]
+    for user in deliveryUser:
+        deliveries.append({"delivery_id":user['id'],"order_id":user['order_id'],"pickup_address":user['pickup_address'],"delivery-address":user['delivery_address']})
+    
+    return Response(deliveries,status=status.HTTP_200_OK)
