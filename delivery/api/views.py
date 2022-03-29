@@ -55,13 +55,15 @@ class getDeliveryOTP(viewsets.ViewSet):
         success, response = send_request_post(url, {'delivery_otp':otp})
         if not success:
             raise ValidationError("/order/update_status/ : Could not connect to orders microservices")
-        if(response.status_code==200):
+        if response.status_code == 200:
             delivery = Delivery.objects.get(order_id=order_id)
             delivery.status = delivery.Status.delivered
             delivery.save()
-            return Response({"message":"Delivered"})
+            return Response({"message":"Delivered"}, status=status.HTTP_200_OK)
+        elif response.status_code == 400:
+            return Response({"message":"Wrong OTP"}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({"message":"Wrong OTP"})
+            return Response({"message":"Matching order does not exist"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -86,6 +88,12 @@ def assignedOrders(request):
     delivery_list= Delivery.objects.filter(delivery_partner=userId)
     deliveries=[]
     for delivery in delivery_list:
-        deliveries.append({"delivery_id":delivery.id,"order_id":delivery.order_id,"pickup_address":delivery.pickup_address,"delivery_address":delivery.delivery_address})
+        deliveries.append({
+            "delivery_id": delivery.id,
+            "order_id": delivery.order_id,
+            "pickup_address": delivery.pickup_address,
+            "delivery_address": delivery.delivery_address,
+            "status": delivery.status
+        })
     
     return Response(deliveries,status=status.HTTP_200_OK)
