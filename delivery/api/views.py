@@ -51,13 +51,13 @@ class getDeliveryOTP(viewsets.ViewSet):
         order_id=request.data['order_id']
         otp=request.data['otp']
         print(order_id,otp)
-        url = ORDERS_MICROSERVICE_URL + '/order/verifyotp/' + order_id
+        url = ORDERS_MICROSERVICE_URL + '/order/verifyotp/' + str(order_id)
         success, response = send_request_post(url, {'delivery_otp':otp})
         if not success:
             raise ValidationError("/order/update_status/ : Could not connect to orders microservices")
         if(response.status_code==200):
             delivery = Delivery.objects.get(order_id=order_id)
-            delivery.status = delivery.status[2]
+            delivery.status = delivery.Status.delivered
             delivery.save()
             return Response({"message":"Delivered"})
         else:
@@ -68,17 +68,20 @@ class getDeliveryOTP(viewsets.ViewSet):
 def readyToPick(request):
     order_id = request.data['order_id']
     delivery = Delivery.objects.get(order_id=order_id)
-    delivery.status = delivery.status[1]
+    delivery.status = delivery.Status.picked
     delivery.save()
-    url = ORDERS_MICROSERVICE_URL + '/order/update_status/' + order_id
+    url = ORDERS_MICROSERVICE_URL + '/order/update_status/' + str(order_id)
     success, response = send_request_post(url, {"target_status":2})
     if not success:
         raise ValidationError("/order/update_status/ : Could not connect to orders microservices")
+    print(response.status_code)
+    if response.status_code != 200:
+        return Response({"message": "Status could not be updated"})
     return Response({"message":"Out for delivery"})
 
 @api_view(['GET'])
 def assignedOrders(request):
-    userId = jwt.decode(request.headers['token'], SECRET_KEY, algorithms=["HS256"])['id']
+    userId = jwt.decode(request.headers['Authorization'].split(' ')[-1], SECRET_KEY, algorithms=["HS256"])['id']
     print(userId)
     delivery_list= Delivery.objects.filter(delivery_partner=userId)
     deliveries=[]
