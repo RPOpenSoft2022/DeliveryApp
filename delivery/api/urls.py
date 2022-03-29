@@ -14,5 +14,6 @@ router.register(r'verifyotp',getDeliveryOTP,)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('ready_to_pick/',views.readyToPick)
+    path('ready_to_pick/',views.readyToPick),
+    path('assigned_orders/',views.assignedOrders)
 ]

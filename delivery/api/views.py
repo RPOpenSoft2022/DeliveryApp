@@ -9,10 +9,9 @@ from rest_framework import viewsets
 from django.contrib.gis.measure import D
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
-import requests
+import requests, jwt
 from .interconnect import send_request_post, send_request_get
-from delivery.settings import DELIVERY_MICROSERVICE_URL, ORDERS_MICROSERVICE_URL, STORES_MICROSERVICE_URL, USERS_MICROSERVICE_URL
-
+from delivery.settings import SECRET_KEY, DELIVERY_MICROSERVICE_URL, ORDERS_MICROSERVICE_URL, STORES_MICROSERVICE_URL, USERS_MICROSERVICE_URL
 
 def isNumber(n):
     if n is None:
@@ -76,3 +75,14 @@ def readyToPick(request):
     if not success:
         raise ValidationError("/order/update_status/ : Could not connect to orders microservices")
     return Response({"message":"Out for delivery"})
+
+@api_view(['GET'])
+def assignedOrders(request):
+    userId = jwt.decode(request.headers['token'], SECRET_KEY, algorithms=["HS256"])['id']
+    print(userId)
+    delivery_list= Delivery.objects.filter(delivery_partner=userId)
+    deliveries=[]
+    for delivery in delivery_list:
+        deliveries.append({"delivery_id":delivery.id,"order_id":delivery.order_id,"pickup_address":delivery.pickup_address,"delivery_address":delivery.delivery_address})
+    
+    return Response(deliveries,status=status.HTTP_200_OK)
