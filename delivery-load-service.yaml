@@ -6,9 +6,9 @@ metadata:
     app: deliveryapp
 spec:
   type: LoadBalancer
+  loadBalancerIP: 34.93.88.26
   ports:
   - port: 80
     targetPort: 8080
   selector:
     app: deliveryapp
-  loadBalancerIP: 35.209.84.144
