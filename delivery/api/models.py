@@ -1,7 +1,4 @@
 from email.policy import default
-from django_json_api.models import JSONAPIModel
-from django_json_api.fields import Attribute
-from django_json_api.django import RelatedJSONAPIField
 from django.contrib.gis.db import models
 
 

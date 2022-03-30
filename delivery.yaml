@@ -85,9 +85,8 @@ metadata:
   labels:
     app: deliveryapp
 spec:
-  type: LoadBalancer
   ports:
-  - port: 83
+  - port: 80
     targetPort: 8080
   selector:
     app: deliveryapp
