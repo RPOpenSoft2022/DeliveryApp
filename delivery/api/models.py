@@ -14,7 +14,8 @@ class Delivery(models.Model):
 
     status = models.CharField(default= Status.not_picked,choices=Status.choices,max_length=20)    
 
-    delivery_partner = models.BigIntegerField(blank=True)   
+    delivery_partner = models.BigIntegerField(blank=True) 
+    delivery_phone_no = models.BigIntegerField(blank=True)  
     creation_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     pickup_location = models.PointField(null=True)
 

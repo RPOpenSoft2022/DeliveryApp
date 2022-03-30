@@ -34,7 +34,7 @@ class DeliveryViewsets(viewsets.ModelViewSet):
         ).order_by('distance')   
         
         nearest_delivery_person = delivery_persons_queryset.first()
-        serializer.save(delivery_partner = nearest_delivery_person.user_id)
+        serializer.save(delivery_partner = nearest_delivery_person.user_id, delivery_phone_no=nearest_delivery_person.phone)
 
 class DeliveryUserViewsets(viewsets.ModelViewSet):
     queryset=DeliveryUser.objects.all()
