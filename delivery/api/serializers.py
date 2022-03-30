@@ -7,7 +7,7 @@ class DeliverySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Delivery
-        fields = ['id','delivery_partner', 'delivery_phone_no','creation_time','pickup_location','rating','temperature','status','pickup_address','delivery_address','customer_phone_number','order_id','order_details']
+        fields = ['id','delivery_partner', 'delivery_phone_no','creation_time','pickup_location','rating','temperature','status','pickup_address','delivery_address', 'customer_name', 'customer_phone_number','order_id','order_details']
 
 
 class DeliveryUserSerializer(serializers.ModelSerializer):
